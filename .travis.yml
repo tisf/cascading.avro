@@ -9,7 +9,7 @@
 sudo: false
 language: java
 mvn: mvn2
-script: mvn install
+script: cd scheme ; mvn install
 jdk:
   - oraclejdk8
 notifications:
