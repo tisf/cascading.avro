@@ -384,8 +384,10 @@ public class AvroScheme extends Scheme<JobConf, RecordReader, OutputCollector, O
 
     @Override
     public int hashCode() {
-
-        return 31 * getSinkFields().hashCode() +
+        
+        /* FIXME: getSinkFields return null apparently! */
+        
+        return 31 * (getSinkFields() == null ? 0 : getSinkFields().hashCode()) +
                 (schema == null ? 0 : schema.hashCode());
     }
 }
