@@ -70,7 +70,7 @@ public class AvroScheme extends Scheme<JobConf, RecordReader, OutputCollector, O
     }
 
     /**
-     * Create a new Cascading 2.0 scheme suitable for reading and writing data using the Avro serialization format.
+     * Create a new Cascading scheme suitable for reading and writing data using the Avro serialization format.
      * This is the legacy constructor format. A Fields object and the corresponding types must be provided.
      *
      * @param fields Fields object from cascading
@@ -81,7 +81,7 @@ public class AvroScheme extends Scheme<JobConf, RecordReader, OutputCollector, O
     }
 
     /**
-     * Create a new Cascading 2.0 scheme suitable for reading and writing data using the Avro serialization format.
+     * Create a new Cascading scheme suitable for reading and writing data using the Avro serialization format.
      * Note that if schema is null, the Avro schema will be inferred from one of the source files (if this scheme
      * is being used as a source). At the moment, we are unable to infer a schema for a sink (this will change soon with
      * a new version of cascading though).
@@ -384,9 +384,6 @@ public class AvroScheme extends Scheme<JobConf, RecordReader, OutputCollector, O
 
     @Override
     public int hashCode() {
-        
-        /* FIXME: getSinkFields return null apparently! */
-        
         return 31 * (getSinkFields() == null ? 0 : getSinkFields().hashCode()) +
                 (schema == null ? 0 : schema.hashCode());
     }

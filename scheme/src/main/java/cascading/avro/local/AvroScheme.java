@@ -362,9 +362,8 @@ public class AvroScheme extends Scheme<Properties, InputStream, OutputStream, Da
 
     @Override
     public int hashCode() {
-
-        return 31 * getSinkFields().hashCode() +
-                schema.hashCode();
+        return 31 * (getSinkFields() == null ? 0 : getSinkFields().hashCode()) +
+                (schema == null ? 0 : schema.hashCode());
     }
 }
 
