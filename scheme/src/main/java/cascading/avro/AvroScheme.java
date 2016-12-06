@@ -37,8 +37,9 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.PathFilter;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Writable;
-import org.apache.hadoop.mapred.JobConf;
+import org.apache.hadoop.mapred.InputFormat;
 import org.apache.hadoop.mapred.OutputCollector;
+import org.apache.hadoop.mapred.OutputFormat;
 import org.apache.hadoop.mapred.RecordReader;
 
 import java.io.BufferedInputStream;
@@ -48,9 +49,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.hadoop.conf.Configuration;
 
-
-public class AvroScheme extends Scheme<JobConf, RecordReader, OutputCollector, Object[], Object[]> {
+public class AvroScheme extends Scheme<Configuration, RecordReader, OutputCollector, Object[], Object[]> {
 
     private static final String DEFAULT_RECORD_NAME = "CascadingAvroRecord";
     private static final PathFilter filter = new PathFilter() {
@@ -143,7 +144,7 @@ public class AvroScheme extends Scheme<JobConf, RecordReader, OutputCollector, O
      */
     @Override
     public void sink(
-            FlowProcess<? extends JobConf> flowProcess,
+            FlowProcess<? extends Configuration> flowProcess,
             SinkCall<Object[], OutputCollector> sinkCall)
             throws IOException {
         TupleEntry tupleEntry = sinkCall.getOutgoingEntry();
@@ -168,7 +169,7 @@ public class AvroScheme extends Scheme<JobConf, RecordReader, OutputCollector, O
      */
     @Override
     public void sinkPrepare(
-            FlowProcess<? extends JobConf> flowProcess,
+            FlowProcess<? extends Configuration> flowProcess,
             SinkCall<Object[], OutputCollector> sinkCall)
             throws IOException {
         sinkCall.setContext(new Object[]{schema});
@@ -188,16 +189,16 @@ public class AvroScheme extends Scheme<JobConf, RecordReader, OutputCollector, O
      */
     @Override
     public void sinkConfInit(
-            FlowProcess<? extends JobConf> flowProcess,
-            Tap<JobConf, RecordReader, OutputCollector> tap,
-            JobConf conf) {
+            FlowProcess<? extends Configuration> flowProcess,
+            Tap<Configuration, RecordReader, OutputCollector> tap,
+            Configuration conf) {
 
         if (schema == null) {
             throw new RuntimeException("Must provide sink schema");
         }
         // Set the output schema and output format class
         conf.set(AvroJob.OUTPUT_SCHEMA, schema.toString());
-        conf.setOutputFormat(AvroOutputFormat.class);
+        conf.setClass("mapred.output.format.class", AvroOutputFormat.class, OutputFormat.class);
 
 
         // add AvroSerialization to io.serializations
@@ -213,7 +214,7 @@ public class AvroScheme extends Scheme<JobConf, RecordReader, OutputCollector, O
      * @return Fields The source cascading fields.
      */
     @Override
-    public Fields retrieveSourceFields(FlowProcess<? extends JobConf> flowProcess, Tap tap) {
+    public Fields retrieveSourceFields(FlowProcess<? extends Configuration> flowProcess, Tap tap) {
         if (schema == null) {
             try {
                 schema = getSourceSchema(flowProcess, tap);
@@ -242,7 +243,7 @@ public class AvroScheme extends Scheme<JobConf, RecordReader, OutputCollector, O
      */
     @Override
     public boolean source(
-            FlowProcess<? extends JobConf> flowProcess,
+            FlowProcess<? extends Configuration> flowProcess,
             SourceCall<Object[], RecordReader> sourceCall)
             throws IOException {
 
@@ -274,14 +275,14 @@ public class AvroScheme extends Scheme<JobConf, RecordReader, OutputCollector, O
      */
     @Override
     public void sourceConfInit(
-            FlowProcess<? extends JobConf> flowProcess,
-            Tap<JobConf, RecordReader, OutputCollector> tap,
-            JobConf conf) {
+            FlowProcess<? extends Configuration> flowProcess,
+            Tap<Configuration, RecordReader, OutputCollector> tap,
+            Configuration conf) {
 
         retrieveSourceFields(flowProcess, tap);
         // Set the input schema and input class
         conf.set(AvroJob.INPUT_SCHEMA, schema.toString());
-        conf.setInputFormat(AvroInputFormat.class);
+        conf.setClass("mapred.input.format.class", AvroInputFormat.class, InputFormat.class);
 
         // add AvroSerialization to io.serializations
         addAvroSerializations(conf);
@@ -294,7 +295,7 @@ public class AvroScheme extends Scheme<JobConf, RecordReader, OutputCollector, O
      * @param tap         The cascading Tap object.
      * @return Schema The schema of the peeked at data, or Schema.NULL if none exists.
      */
-    private Schema getSourceSchema(FlowProcess<? extends JobConf> flowProcess, Tap tap) throws IOException {
+    private Schema getSourceSchema(FlowProcess<? extends Configuration> flowProcess, Tap tap) throws IOException {
 
         if (tap instanceof CompositeTap) {
             tap = (Tap) ((CompositeTap) tap).getChildTaps().next();
@@ -341,7 +342,7 @@ public class AvroScheme extends Scheme<JobConf, RecordReader, OutputCollector, O
         return Schema.create(Schema.Type.NULL);
     }
 
-    private void addAvroSerializations(JobConf conf) {
+    private void addAvroSerializations(Configuration conf) {
         Collection<String> serializations = conf.getStringCollection("io.serializations");
         if (!serializations.contains(AvroSerialization.class.getName())) {
             serializations.add(AvroSerialization.class.getName());
@@ -387,6 +388,8 @@ public class AvroScheme extends Scheme<JobConf, RecordReader, OutputCollector, O
         return 31 * (getSinkFields() == null ? 0 : getSinkFields().hashCode()) +
                 (schema == null ? 0 : schema.hashCode());
     }
+
+
 }
 
 

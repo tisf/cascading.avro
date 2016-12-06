@@ -17,22 +17,22 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>cascading.avro</groupId>
     <artifactId>avro-scheme</artifactId>
-    <version>3.0-SNAPSHOT</version>
+    <version>3.0-tangoe.1</version>
     <packaging>jar</packaging>
     <name>Cascading support for Avro</name>
     <description>
         Cascading scheme for reading and writing Avro-serialized data.
     </description>
     <scm>
-        <connection>scm:git:git://github.com/ScaleUnlimited/cascading.avro.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com:ScaleUnlimited/cascading.avro.git</developerConnection>
-        <url>https://github.com/ScaleUnlimited/cascading.avro</url>
+        <connection>scm:git:git://github.com/Tangoe/cascading.avro.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com:Tangoe/cascading.avro.git</developerConnection>
+        <url>https://github.com/Tangoe/cascading.avro</url>
     </scm>
 
     <properties>
         <hadoop.version>2.6.0</hadoop.version>
-        <cascading.version>3.0.2</cascading.version>
-        <avro.version>1.7.7</avro.version>
+        <cascading.version>3.1.0</cascading.version>
+        <avro.version>1.7.4</avro.version>
     </properties>
 
     <repositories>
@@ -56,8 +56,8 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>2.3.2</version>
                     <configuration>
-                        <source>1.6</source>
-                        <target>1.6</target>
+                        <source>1.7</source>
+                        <target>1.7</target>
                         <encoding>UTF-8</encoding>
                         <testExcludes>
                             <exclude>**/cascading/avro/TestExtraLarge.java</exclude>

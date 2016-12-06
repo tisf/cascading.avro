@@ -26,7 +26,7 @@ import cascading.avro.pojo.TopPojo;
 import cascading.flow.Flow;
 import cascading.flow.FlowDef;
 import cascading.flow.local.LocalFlowConnector;
-import cascading.operation.expression.ExpressionFunction;
+//import cascading.operation.expression.ExpressionFunction;
 import cascading.pipe.CoGroup;
 import cascading.pipe.Each;
 import cascading.pipe.Every;
@@ -162,8 +162,8 @@ public class PackedAvroSchemeCascadingTest {
     Fields outputFields = new Fields("toppojo-as-json");
     
     Pipe p = new Pipe("TopPojo Avro input");
-    p = new Each(p, new ExpressionFunction(inputFields, "$0.toString()", TopPojo.class));
-
+  /*  p = new Each(p, new ExpressionFunction(inputFields, "$0.toString()", TopPojo.class));
+*/
     Tap<?,?,?> outTap = new FileTap(new TextLine(outputFields), jsonOutPath);
     
     FlowDef flowDef = FlowDef.flowDef().
