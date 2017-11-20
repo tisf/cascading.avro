@@ -18,7 +18,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>cascading.avro</groupId>
     <artifactId>avro-scheme</artifactId>
-    <version>3.0-tangoe.1</version>
+    <version>3.0-tangoe.1.tisf</version>
     <packaging>jar</packaging>
     <name>Cascading support for Avro</name>
     <description>
@@ -33,7 +33,7 @@
     <properties>
         <hadoop.version>2.6.0</hadoop.version>
         <cascading.version>3.1.0</cascading.version>
-        <avro.version>1.7.4</avro.version>
+        <avro.version>1.7.7</avro.version>
     </properties>
 
     <repositories>
